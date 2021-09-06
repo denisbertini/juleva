@@ -51,6 +51,11 @@ function optimize(o::GOpts, x::Vector{Cdouble})
         throw(BoundsError())
     end
     o.x_s = pointer(x)
+    argv2 = [];
+    for i in argv
+        push!(argv2, Vector{Char}(i))
+    end
+    println(typeof(argv2))
     ccall((:g_optimize2,mylib)
           ,Int32,(Int32,Ptr{Ptr{UInt8}}, Ref{GOpts})
           ,length(argv), argv, Ref(o))
