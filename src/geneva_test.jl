@@ -1,7 +1,7 @@
 #using Pkg
 #pkg"activate ."
 
-push!(LOAD_PATH, pwd(),"C")
+#push!(LOAD_PATH, pwd(),"C")
 
 include("Gopts.jl")
 using .Gopts

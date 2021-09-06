@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <thread>
+#include <mutex>
 
 #include <gen_c_connector.h>
 
@@ -26,6 +28,8 @@ typedef struct gen_obj_function_struct g_func;
 
 #define F_EVAL(F,x) (*((F)->f))(x,(F)->dim,(F)->params)
 
+
+std::mutex mtx;
 
 #ifdef __cplusplus
 extern "C" {
@@ -140,6 +144,8 @@ extern "C" {
       left[i]  = opts->x_l[i];
       right[i] = opts->x_u[i];
     }
+
+         
     // create optimizer,give CLI options 
     GenevaOptimizer3 go3{argc, argv};
     // create ea , for easy handling
@@ -152,7 +158,7 @@ extern "C" {
     // use the optimizer, add an Inplace GD 
     auto best_ptr = go3.optimize(pop, {ea, Algorithm_GD{.Iterations = opts->iter}});
     std::cout << best_ptr << std::endl;
-    
+        
     // Retrieve the parameters
     std::vector<double> parVec;
     best_ptr->streamline(parVec);
@@ -193,6 +199,9 @@ extern "C" {
       for (size_t i=0;i<opts->dim;i++) vv[i]=a[i];
       return F_EVAL(&G,vv);
     };
+
+    std::vector<double> vect{ 10, 20, 30 };
+    std::cout << " Function values obtained -> lambda2(x)" <<  lambda2(vect) << std::endl;
     
     //Set boundaries (start value, left & right)
     //std::vector<double> start{50, 50, 50}, left{0, 0, 0}, right{100, 100, 100};

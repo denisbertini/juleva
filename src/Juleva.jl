@@ -54,7 +54,7 @@ function optimize(o::GOpts, x::Vector{Cdouble})
     ccall((:g_optimize2,mylib)
           ,Int32,(Int32,Ptr{Ptr{UInt8}}, Ref{GOpts})
           ,length(argv), argv, Ref(o))
-    return (o.retRes)  
+    return (unsafe_load(o.retRes), unsafe_load(o.retErr))  
 end
 
 
