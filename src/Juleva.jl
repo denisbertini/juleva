@@ -8,7 +8,7 @@ export optimize
 # Add the C library to PATH
 global const mylib=joinpath(pwd(),"C","libgen.so")
 # Arguments
-global argv=["-h"]
+global argv=["-h\0"]
 
 function f_callback(p::Ptr{Cvoid}, f_::Ptr{Cvoid})
     f = unsafe_pointer_to_objref(f_)::Function
@@ -51,11 +51,6 @@ function optimize(o::GOpts, x::Vector{Cdouble})
         throw(BoundsError())
     end
     o.x_s = pointer(x)
-    argv2 = [];
-    for i in argv
-        push!(argv2, Vector{Char}(i))
-    end
-    println(typeof(argv2))
     ccall((:g_optimize2,mylib)
           ,Int32,(Int32,Ptr{Ptr{UInt8}}, Ref{GOpts})
           ,length(argv), argv, Ref(o))

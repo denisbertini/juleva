@@ -173,9 +173,11 @@ extern "C" {
     return 0;
   }
 
-    int g_optimize2 (int argc, char** argv, GOpts_t* opts){
+  int g_optimize2 (int argc, char** argv, GOpts_t* opts){
        
     using namespace GO3;
+
+    std::cout << "argc: " << argc << "argv: " << argv[0] << std::endl;
 
     std::cout << "opts" << opts << " dim:" << opts->dim << std::endl;
    
