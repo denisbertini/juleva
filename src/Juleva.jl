@@ -8,7 +8,7 @@ export optimize
 # Add the C library to PATH
 global const mylib=joinpath(pwd(),"C","libgen.so")
 # Arguments
-global argv=["-h\0"]
+global argv=["-a ea,gd"]
 
 function f_callback(p::Ptr{Cvoid}, f_::Ptr{Cvoid})
     f = unsafe_pointer_to_objref(f_)::Function
@@ -17,17 +17,17 @@ end
 
 
 function optimize(f::Function)
-    return Symbol(f)  
+    c = @cfunction($f, Cdouble, (Ptr{Cdouble},Ptr{Cdouble},Ptr{Cdouble}))
+    return typeof(c)  
 end
 
 
-function optimize_t(f::Function, o::GOpts, x::Vector{Cdouble})
+function optimize(f::Function, o::GOpts, x::Vector{Cdouble})
     if (length(x) != o.dim)
         throw(BoundsError())
     end
-   f_ = unsafe_pointer_to_objref(f)::Function
     o.x_s = pointer(x)
-    f_ptr = @cfunction( $f_ 
+    f_ptr = @cfunction( $f
         ,Cdouble,(Ptr{Cdouble},Ptr{Cdouble},Ptr{Cdouble}))
     lk=ReentrantLock()
     begin

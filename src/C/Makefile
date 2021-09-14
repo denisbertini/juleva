@@ -22,7 +22,7 @@ OBJECTS=$(SOURCES:.cpp=.o)
 	$(CXX) $(CXXFLAGS) $< -o $@ 
  
 lib: $(OBJECTS)
-	$(CC) -shared -fPIC -Wl,--no-as-needed ${LIBS} -o libgen.so $(OBJECTS)
+	$(CC) -Wl,--no-as-needed -shared -fPIC ${LIBS} -o libgen.so $(OBJECTS)
  
 clean:
 	rm *~ *.o *.so
