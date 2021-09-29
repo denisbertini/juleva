@@ -39,7 +39,8 @@ g_opts.func = @cfunction(integrand,Cdouble,(Ptr{Cdouble},Ptr{Cdouble},Ptr{Cdoubl
 
 println(g_opts.dim)
 
-res = optimize(integrand, g_opts, [0.1,0.2,0.3])
+func = @cfunction(integrand,Cdouble,(Ptr{Cdouble},Ptr{Cdouble},Ptr{Cdouble}))
+res = optimize(func, xl, xu, 2, 3, xs, ["-a ea"])
 
 println(res)
 

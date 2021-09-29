@@ -57,7 +57,24 @@ function optimize(o::GOpts, x::Vector{Cdouble})
     return (unsafe_load(o.retRes), unsafe_load(o.retErr))  
 end
 
-
+# f has to be a function already turned into a cfunction, since it is not possible to dynamically convert a function depending on it's
+# amount of parameters and their type
+function optimize(f::Ptr{Cvoid}, lower::Vector{Cdouble}, upper::Vector{Cdouble}, algorithm::Int64, dim::Int64, start::Vector{Cdouble}, argv::Vector{String}; kwargs...)
+    opts = GOpts()
+    opts.dim = Int32(dim)
+    opts.x_l = pointer(lower)
+    opts.x_u = pointer(upper)
+    opts.algo = Int32(algorithm)
+    opts.func = f
+    if(length(start) != dim) 
+        throw(BoundsError())
+    end
+    opts.x_s = pointer(start)
+    ccall((:g_optimize2,mylib)
+          ,Int32,(Int32,Ptr{Ptr{UInt8}}, Ref{GOpts})
+          ,length(argv), argv, Ref(opts))
+    return (unsafe_load(opts.retRes), unsafe_load(opts.retErr), unsafe_load(opts.iter), unsafe_load(opts.algo))
+end
 
 end
     
