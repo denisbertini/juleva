@@ -57,8 +57,6 @@ function optimize(f::Ptr{Cvoid}, lower::Vector{Cdouble}, upper::Vector{Cdouble},
     if(length(start) != dim) 
         throw(BoundsError())
     end
-
-    sleep(10)
     opts.x_s = pointer(start)
     ccall((:g_optimize2,mylib)
           ,Int32,(Int32,Ptr{Ptr{UInt8}}, Ref{GOpts})

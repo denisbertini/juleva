@@ -7,7 +7,7 @@
         "comment": "The amount of resubmissions allowed if a full return of work",
         "comment": "items was expected but only a subset has returned",
         "default": "5",
-        "value": "5"
+        "value": "0"
     },
     "waitFactor": {
         "comment": "A static double factor for timeouts",

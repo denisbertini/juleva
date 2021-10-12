@@ -15,9 +15,10 @@ fpi = convert(Float64,π)
 x = Array{Float64,1}(undef,3)
 y = Array{Float64,1}(undef,3)
 
-xs = [1.; 1.]
-xl = [-5.12; -5.12]
-xu = [5.12; 5.12]
+xs = [-1.4; -2.2; -3.3]
+xl = [-100.; -100.; -100.]
+xu = [100.; 100.; 100.]
+
 
 function integrand(x::Ptr{Float64},dim::Int32)
   A = 1.0 / (pi * pi * pi)
@@ -33,7 +34,7 @@ c_integrand = @cfunction(integrand,Cdouble,(Ptr{Cdouble},Cint))
 function sphere(x::Ptr{Float64}, dim::Int32) 
   y = 0.
   for value in 1:dim
-    y += unsafe_load(x, value)
+    y += unsafe_load(x, value)^2
   end
   return y::Cdouble
 end
@@ -70,7 +71,7 @@ c_rosenbrock = @cfunction(rosenbrock,Cdouble,(Ptr{Cdouble},Cint))
 # Init options
 g_opts = GOpts()
 g_opts.algo = 2
-g_opts.dim = 2
+g_opts.dim = 3
 g_opts.iter = 10
 g_opts.retRes = pointer(x)
 g_opts.retErr = pointer(y)
@@ -81,9 +82,8 @@ g_opts.func = @cfunction(rosenbrock,Cdouble,(Ptr{Cdouble},Cint))
 
 
 println(g_opts.dim)
-
-#res = optimize(g_opts, xs, ["--showAll"])
-res = optimize(c_rosenbrock, xl, xu, [ea,gd], 2, xs)
+res = optimize(g_opts, xs, ["-a ea,gd"])
+#res = optimize(c_integrand, xl, xu, [ea,gd], 3, xs)
 
 println(res)
 
